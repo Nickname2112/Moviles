@@ -1,13 +1,11 @@
 from flask import jsonify
-import json
-from flask import current_app
-from utils.util import CustomJSONEncoder
+
 
 def success_response(data, message, http_code=200):
     body = {
         "data": data,
         "message": message,
-        "status": False
+        "status": True
     }
 
     return jsonify(body), http_code
