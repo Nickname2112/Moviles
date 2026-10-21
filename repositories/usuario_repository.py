@@ -13,6 +13,7 @@ class UsuarioRepository:
                     password_hash,
                     nombres,
                     apellidos,
+                    foto,
                     rol,
                     estado
                 FROM usuario
@@ -35,6 +36,7 @@ class UsuarioRepository:
                     email,
                     nombres,
                     apellidos,
+                    foto,
                     rol,
                     estado,
                     fecha_registro
@@ -52,11 +54,15 @@ class UsuarioRepository:
         """
         Devuelve únicamente los datos necesarios para autorizar
         y localizar la foto del usuario autenticado.
+
+        La base de datos del esquema actual no incluye una columna
+        `foto`, así que se usa el nombre por defecto del archivo
+        del usuario y se resuelve en la carpeta de perfiles.
         """
         cursor = self.connection.cursor()
         try:
             sql = """
-                SELECT id, foto, estado
+                SELECT id, estado, foto
                 FROM usuario
                 WHERE id = %s
                 LIMIT 1

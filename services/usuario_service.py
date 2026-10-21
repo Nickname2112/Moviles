@@ -22,6 +22,7 @@ class UsuarioService:
                 "email": usuario["email"],
                 "nombres": usuario["nombres"],
                 "apellidos": usuario["apellidos"],
+                "foto": usuario["foto"],
                 "rol": usuario["rol"],
                 "estado": usuario["estado"],
                 "fecha_registro": (
@@ -54,22 +55,18 @@ class UsuarioService:
             if usuario["estado"] != "ACTIVO":
                 return None, None, "El usuario se encuentra inactivo", 403
 
-            nombre_foto = usuario.get("foto")
-
-            if not nombre_foto:
-                nombre_foto = "default.png" #return None, None, "El usuario no tiene foto de perfil", 404
-
-            # La BD debe guardar solo el nombre del archivo,
-            # por ejemplo: usuario_15.jpg
-            nombre_seguro = os.path.basename(nombre_foto)
-
             ruta_base = os.path.realpath(Config.PROFILE_PHOTO_DIR)
+            os.makedirs(ruta_base, exist_ok=True)
+
+            nombre_foto = "default.png"
+            if "foto" in usuario and usuario.get("foto"):
+                nombre_foto = usuario.get("foto")
+
+            nombre_seguro = os.path.basename(nombre_foto)
             ruta_archivo = os.path.realpath(
                 os.path.join(ruta_base, nombre_seguro)
             )
-            #print(ruta_archivo)
 
-            # Defensa adicional frente a path traversal.
             if os.path.commonpath([ruta_base, ruta_archivo]) != ruta_base:
                 return None, None, "Ruta de foto no válida", 400
 
